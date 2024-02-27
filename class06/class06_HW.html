@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Anna Waters (PID: A16271985)">
+
+<title>class06_hw</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="class06_HW_files/libs/clipboard/clipboard.min.js"></script>
+<script src="class06_HW_files/libs/quarto-html/quarto.js"></script>
+<script src="class06_HW_files/libs/quarto-html/popper.min.js"></script>
+<script src="class06_HW_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="class06_HW_files/libs/quarto-html/anchor.min.js"></script>
+<link href="class06_HW_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="class06_HW_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="class06_HW_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="class06_HW_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="class06_HW_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">class06_hw</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Anna Waters (PID: A16271985) </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>A. Improve this regular R code by abstracting the main activities in your own new function. Note, we will go through this example together in the formal lecture. The main steps should entail running through the code to see if it works, simplifying to a core working code snippet, reducing any calculation duplication, and finally transferring your new streamlined code into a more useful function for you</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (A. Can you improve this analysis code?</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">a=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">b=</span><span class="fu">seq</span>(<span class="dv">200</span>,<span class="dv">400</span>,<span class="at">length=</span><span class="dv">10</span>),<span class="at">c=</span><span class="dv">11</span><span class="sc">:</span><span class="dv">20</span>,<span class="at">d=</span><span class="cn">NA</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>a <span class="ot">&lt;-</span> (df<span class="sc">$</span>a <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>a)) <span class="sc">/</span> (<span class="fu">max</span>(df<span class="sc">$</span>a) <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>a))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0.0000000 0.1111111 0.2222222 0.3333333 0.4444444 0.5555556 0.6666667
+ [8] 0.7777778 0.8888889 1.0000000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>b <span class="ot">&lt;-</span> (df<span class="sc">$</span>b <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>a)) <span class="sc">/</span> (<span class="fu">max</span>(df<span class="sc">$</span>b) <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>b)) <span class="co">#miss type of max()</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>c <span class="ot">&lt;-</span> (df<span class="sc">$</span>c <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>c)) <span class="sc">/</span> (<span class="fu">max</span>(df<span class="sc">$</span>c) <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>c))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>d <span class="ot">&lt;-</span> (df<span class="sc">$</span>d <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>d)) <span class="sc">/</span> (<span class="fu">max</span>(df<span class="sc">$</span>a) <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>d)) <span class="co">#miss type of max()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Above code block with misstyping fixed</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">a=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">b=</span><span class="fu">seq</span>(<span class="dv">200</span>,<span class="dv">400</span>,<span class="at">length=</span><span class="dv">10</span>),<span class="at">c=</span><span class="dv">11</span><span class="sc">:</span><span class="dv">20</span>,<span class="at">d=</span><span class="cn">NA</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>a <span class="ot">&lt;-</span> (df<span class="sc">$</span>a <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>a)) <span class="sc">/</span> (<span class="fu">max</span>(df<span class="sc">$</span>a) <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>a))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0.0000000 0.1111111 0.2222222 0.3333333 0.4444444 0.5555556 0.6666667
+ [8] 0.7777778 0.8888889 1.0000000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>b <span class="ot">&lt;-</span> (df<span class="sc">$</span>b <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>b)) <span class="sc">/</span> (<span class="fu">max</span>(df<span class="sc">$</span>b) <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>b)) <span class="co">#miss type of max() fixed</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>c <span class="ot">&lt;-</span> (df<span class="sc">$</span>c <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>c)) <span class="sc">/</span> (<span class="fu">max</span>(df<span class="sc">$</span>c) <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>c))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>d <span class="ot">&lt;-</span> (df<span class="sc">$</span>d <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>d)) <span class="sc">/</span> (<span class="fu">max</span>(df<span class="sc">$</span>d) <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>d)) <span class="co">#miss type of max() fixed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Above code is subtracting every cell in the column by the minimum value then dividing by the max value subtracted by the minimum and replacing the column which results in normalized data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>a <span class="ot">&lt;-</span> (df<span class="sc">$</span>a <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>a)) <span class="sc">/</span> (<span class="fu">max</span>(df<span class="sc">$</span>a) <span class="sc">-</span> <span class="fu">min</span>(df<span class="sc">$</span>a))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Im going to switch out the variable for something generalizable</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> df<span class="sc">$</span>a</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#using min() to find the minimum value &amp; max() to find the max value to normalize the data within a column</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> (x <span class="sc">-</span><span class="fu">min</span>(x)) <span class="sc">/</span> (<span class="fu">max</span>(x)<span class="sc">-</span><span class="fu">min</span>(x))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0.0000000 0.1111111 0.2222222 0.3333333 0.4444444 0.5555556 0.6666667
+ [8] 0.7777778 0.8888889 1.0000000</code></pre>
+</div>
+</div>
+<p>Looks like the same answer as the original so I am going forward with making it into a function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#name: norm_fun</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># creating the function by calling `function()`</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#input: x = column of the data frame</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>norm_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#input that uses min() and max() to normalize the input</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> (x <span class="sc">-</span> <span class="fu">min</span>(x)) <span class="sc">/</span> (<span class="fu">max</span>(x)<span class="sc">-</span><span class="fu">min</span>(x))</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#passing the value of x outside the function</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Testing on the df</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df_test <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">a=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">b=</span><span class="fu">seq</span>(<span class="dv">200</span>,<span class="dv">400</span>,<span class="at">length=</span><span class="dv">10</span>),<span class="at">c=</span><span class="dv">11</span><span class="sc">:</span><span class="dv">20</span>,<span class="at">d=</span><span class="cn">NA</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#using apply function to test on the data frame across every column (margin=2)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(df_test,<span class="at">MARGIN =</span> <span class="dv">2</span>,<span class="at">FUN =</span> norm_fun)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              a         b         c  d
+ [1,] 0.0000000 0.0000000 0.0000000 NA
+ [2,] 0.1111111 0.1111111 0.1111111 NA
+ [3,] 0.2222222 0.2222222 0.2222222 NA
+ [4,] 0.3333333 0.3333333 0.3333333 NA
+ [5,] 0.4444444 0.4444444 0.4444444 NA
+ [6,] 0.5555556 0.5555556 0.5555556 NA
+ [7,] 0.6666667 0.6666667 0.6666667 NA
+ [8,] 0.7777778 0.7777778 0.7777778 NA
+ [9,] 0.8888889 0.8888889 0.8888889 NA
+[10,] 1.0000000 1.0000000 1.0000000 NA</code></pre>
+</div>
+</div>
+<p>Function test looks correct! Looks like the above function works!</p>
+<p>B. Next improve the below example code for the analysis of protein drug interactions by abstracting the main activities in your own new function. Then answer questions 1 to 6 below. It is recommended that you start a new Project in RStudio in a new directory and then install the bio3d package noted in the R code below (N.B. you can use the command install.packages(“bio3d”) or the RStudio interface to do this). Then run through the code to see if it works, fix any copy/paste errors before simplifying to a core working code snippet, reducing any calculation duplication, and finally transferring it into a more useful function for you.</p>
+<p>I installed <code>bio3d()</code> using the consol below with <code>install.packages()</code> and will library it in the chunck.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Can you improve this analysis code?</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pulling bio3d package into the workspace to use</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bio3d)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># `read.pdb()` reads PDB files and returns a large pdb object</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>s1 <span class="ot">&lt;-</span> <span class="fu">read.pdb</span>(<span class="st">"4AKE"</span>) <span class="co"># kinase with drug</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Note: Accessing on-line PDB file</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>s2 <span class="ot">&lt;-</span> <span class="fu">read.pdb</span>(<span class="st">"1AKE"</span>) <span class="co"># kinase no drug</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Note: Accessing on-line PDB file
+   PDB has ALT records, taking A only, rm.alt=TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>s3 <span class="ot">&lt;-</span> <span class="fu">read.pdb</span>(<span class="st">"1E4Y"</span>) <span class="co"># kinase with drug</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Note: Accessing on-line PDB file</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#trim.pdb creates a smaller pdb by subsetting the type of chain (A) and the type of atom (elety)</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>s1.chainA <span class="ot">&lt;-</span> <span class="fu">trim.pdb</span>(s1, <span class="at">chain=</span><span class="st">"A"</span>, <span class="at">elety=</span><span class="st">"CA"</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>s2.chainA <span class="ot">&lt;-</span> <span class="fu">trim.pdb</span>(s2, <span class="at">chain=</span><span class="st">"A"</span>, <span class="at">elety=</span><span class="st">"CA"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>s3.chainA <span class="ot">&lt;-</span> <span class="fu">trim.pdb</span>(s1, <span class="at">chain=</span><span class="st">"A"</span>, <span class="at">elety=</span><span class="st">"CA"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#setting a variable to equal the b atom</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>s1.b <span class="ot">&lt;-</span> s1.chainA<span class="sc">$</span>atom<span class="sc">$</span>b</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>s2.b <span class="ot">&lt;-</span> s2.chainA<span class="sc">$</span>atom<span class="sc">$</span>b</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>s3.b <span class="ot">&lt;-</span> s3.chainA<span class="sc">$</span>atom<span class="sc">$</span>b</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plotb3</span>(s1.b, <span class="at">sse=</span>s1.chainA, <span class="at">typ=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Bfactor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotb3</span>(s2.b, <span class="at">sse=</span>s2.chainA, <span class="at">typ=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Bfactor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotb3</span>(s3.b, <span class="at">sse=</span>s3.chainA, <span class="at">typ=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Bfactor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>**Q1. What type of object is returned from the read.pdb() function?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>s1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Call:  read.pdb(file = "4AKE")
+
+   Total Models#: 1
+     Total Atoms#: 3459,  XYZs#: 10377  Chains#: 2  (values: A B)
+
+     Protein Atoms#: 3312  (residues/Calpha atoms#: 428)
+     Nucleic acid Atoms#: 0  (residues/phosphate atoms#: 0)
+
+     Non-protein/nucleic Atoms#: 147  (residues: 147)
+     Non-protein/nucleic resid values: [ HOH (147) ]
+
+   Protein sequence:
+      MRIILLGAPGAGKGTQAQFIMEKYGIPQISTGDMLRAAVKSGSELGKQAKDIMDAGKLVT
+      DELVIALVKERIAQEDCRNGFLLDGFPRTIPQADAMKEAGINVDYVLEFDVPDELIVDRI
+      VGRRVHAPSGRVYHVKFNPPKVEGKDDVTGEELTTRKDDQEETVRKRLVEYHQMTAPLIG
+      YYSKEAEAGNTKYAKVDGTKPVAEVRADLEKILGMRIILLGAPGA...&lt;cut&gt;...KILG
+
++ attr: atom, xyz, seqres, helix, sheet,
+        calpha, remark, call</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(s1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "list"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>?read.pdb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>Read.pbd()</code> returns a PDB object in the form of a list.</p>
+<p>**Q2. What does the trim.pdb() function do?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>?trim.pdb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>trim.pdb()</code> creates a small pdb object by subsetting the larger pdb. The chain parameter and elety specify which chain and which type of atom is being subset into the new pdb.</p>
+<p>**Q3. What input parameter would turn off the marginal black and grey rectangles in the plots and what do they represent in this case?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#removing the sse input of the plot removes the black and grey rectangles which were pulling from chain A which is the annotation for the secondary structure elements</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotb3</span>(s1.b, <span class="at">typ=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Bfactor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>In this case, by removing the SSE component of the plot, the annotation information about where Chain A relative to the protein residue is removed from the plot.</p>
+<p>**Q4. What would be a better plot to compare across the different proteins?</p>
+<p>A better plot to compare the different proteins would be a dendrogram or alignment plot because it would better show their similarities in structure.</p>
+<p>**Q5. Which proteins are more similar to each other in their B-factor trends. How could you quantify this?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>hc <span class="ot">&lt;-</span> <span class="fu">hclust</span>( <span class="fu">dist</span>( <span class="fu">rbind</span>(s1.b, s2.b, s3.b) ) )</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co">#rbind creates a row with the three inputs </span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co">#dist() creates a distance matrix </span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">#hclust() performs hierarchal clusteirng on the distance matrix to create the dendrogram</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Based on the dendrogram, proteins 1 and 3 are the most similar to each other.</p>
+<p>**Q6. How would you generalize the original code above to work with any set of input protein structures?</p>
+<p>First, I am going to simplify the code by annotating what each step of the processes is doing.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># `read.pdb()` reads PDB files and returns a large pdb object</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>s1 <span class="ot">&lt;-</span> <span class="fu">read.pdb</span>(<span class="st">"4AKE"</span>) <span class="co"># kinase with drug</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Note: Accessing on-line PDB file</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in get.pdb(file, path = tempdir(), verbose = FALSE):
+/var/folders/7b/5xrlz_vx2c5d__w683y_p5pm0000gn/T//RtmpxJvJiC/4AKE.pdb exists.
+Skipping download</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>s2 <span class="ot">&lt;-</span> <span class="fu">read.pdb</span>(<span class="st">"1AKE"</span>) <span class="co"># kinase no drug</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Note: Accessing on-line PDB file</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in get.pdb(file, path = tempdir(), verbose = FALSE):
+/var/folders/7b/5xrlz_vx2c5d__w683y_p5pm0000gn/T//RtmpxJvJiC/1AKE.pdb exists.
+Skipping download</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   PDB has ALT records, taking A only, rm.alt=TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>s3 <span class="ot">&lt;-</span> <span class="fu">read.pdb</span>(<span class="st">"1E4Y"</span>) <span class="co"># kinase with drug</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Note: Accessing on-line PDB file</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in get.pdb(file, path = tempdir(), verbose = FALSE):
+/var/folders/7b/5xrlz_vx2c5d__w683y_p5pm0000gn/T//RtmpxJvJiC/1E4Y.pdb exists.
+Skipping download</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#trim.pdb creates a smaller pdb by subsetting the type of chain (A) and the type of atom (elety)</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>s1.chainA <span class="ot">&lt;-</span> <span class="fu">trim.pdb</span>(s1, <span class="at">chain=</span><span class="st">"A"</span>, <span class="at">elety=</span><span class="st">"CA"</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>s2.chainA <span class="ot">&lt;-</span> <span class="fu">trim.pdb</span>(s2, <span class="at">chain=</span><span class="st">"A"</span>, <span class="at">elety=</span><span class="st">"CA"</span>)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>s3.chainA <span class="ot">&lt;-</span> <span class="fu">trim.pdb</span>(s1, <span class="at">chain=</span><span class="st">"A"</span>, <span class="at">elety=</span><span class="st">"CA"</span>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co">#setting a variable to equal the b atom</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>s1.b <span class="ot">&lt;-</span> s1.chainA<span class="sc">$</span>atom<span class="sc">$</span>b</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>s2.b <span class="ot">&lt;-</span> s2.chainA<span class="sc">$</span>atom<span class="sc">$</span>b</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>s3.b <span class="ot">&lt;-</span> s3.chainA<span class="sc">$</span>atom<span class="sc">$</span>b</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting a line graph (typ = "l") of residues (s1.b) vs Bfactor with the chain A annotations</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plotb3</span>(s1.b, <span class="at">sse=</span>s1.chainA, <span class="at">typ=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Bfactor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotb3</span>(s2.b, <span class="at">sse=</span>s2.chainA, <span class="at">typ=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Bfactor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotb3</span>(s3.b, <span class="at">sse=</span>s3.chainA, <span class="at">typ=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Bfactor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-12-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Now I am going to make a simplified snippet for just one of the protein sequences.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#read in the pdb with input between the ""</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>s1 <span class="ot">&lt;-</span> <span class="fu">read.pdb</span>(<span class="st">"4AKE"</span>) <span class="co"># kinase with drug</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Note: Accessing on-line PDB file</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in get.pdb(file, path = tempdir(), verbose = FALSE):
+/var/folders/7b/5xrlz_vx2c5d__w683y_p5pm0000gn/T//RtmpxJvJiC/4AKE.pdb exists.
+Skipping download</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co">#subset the read pdb for chain A and the atom type</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>s1.chainA <span class="ot">&lt;-</span> <span class="fu">trim.pdb</span>(s1, <span class="at">chain=</span><span class="st">"A"</span>, <span class="at">elety=</span><span class="st">"CA"</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="co">#isolate atom type b from chain A in the pdb and assign it to a new vector</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>s1.b <span class="ot">&lt;-</span> s1.chainA<span class="sc">$</span>atom<span class="sc">$</span>b</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co">#plot the b factor by residue with chain A annotations</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plotb3</span>(s1.b, <span class="at">sse=</span>s1.chainA, <span class="at">typ=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Bfactor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>I am going to further simplify the snippet by replacing the specific variable with a general one and test it to see the answer is the same. I am setting the read in variable as a generic.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># setting the read in PDB as a generic variable</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co">#read in the pdb with input between the ""</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">read.pdb</span>(<span class="st">"4AKE"</span>) <span class="co"># kinase with drug</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Note: Accessing on-line PDB file</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in get.pdb(file, path = tempdir(), verbose = FALSE):
+/var/folders/7b/5xrlz_vx2c5d__w683y_p5pm0000gn/T//RtmpxJvJiC/4AKE.pdb exists.
+Skipping download</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co">#subset the read pdb for chain A and the atom type</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>p.chainA <span class="ot">&lt;-</span> <span class="fu">trim.pdb</span>(p, <span class="at">chain=</span><span class="st">"A"</span>, <span class="at">elety=</span><span class="st">"CA"</span>)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="co">#isolate atom type b from chain A in the pdb and assign it to a new vector</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>p.b <span class="ot">&lt;-</span> p.chainA<span class="sc">$</span>atom<span class="sc">$</span>b</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="co">#plot the b factor by residue with chain A annotations</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plotb3</span>(p.b, <span class="at">sse=</span>p.chainA, <span class="at">typ=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Bfactor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The results of the generalized is the same so I am going to start forming the function body and inputs off of the simplified snippet.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Requires `plot3b()`</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Inputs: </span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co">#p = PDB name to read in, needs "" ex: "4AKE"</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co">#c = which chain to subset (chain =), needs "", assumes chain "A" if no input</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="co">#e = type of Atom to subset (elety =), needs "", assumes "CA" if no input</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Function creates B factor plot of Chain A and Atom type CA</span></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>Protein_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(p,<span class="at">c =</span><span class="st">"A"</span>, <span class="at">e =</span> <span class="st">"CA"</span>){</span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#read in the pdb with input from p</span></span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>protein <span class="ot">&lt;-</span> <span class="fu">read.pdb</span>(p) </span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a><span class="co">#subset the read pdb for chain A and the atom type unless specified</span></span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>protein.chainA <span class="ot">&lt;-</span> <span class="fu">trim.pdb</span>(protein, <span class="at">chain =</span> c , <span class="at">elety =</span> e)</span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a><span class="co">#isolate atom type b from chain A in the pdb and assign it to a new vector</span></span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>protein.b <span class="ot">&lt;-</span> protein.chainA<span class="sc">$</span>atom<span class="sc">$</span>b</span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a><span class="co">#plot the b factor by residue with chain A annotations</span></span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>Bfactor_plot <span class="ot">&lt;-</span> <span class="fu">plotb3</span>(protein.b, <span class="at">sse=</span>protein.chainA, <span class="at">typ=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Bfactor"</span>)</span>
+<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a><span class="co">#Pulls the plot from the function and adds it to the global environment for other use</span></span>
+<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a><span class="fu">return</span>(Bfactor_plot)</span>
+<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Testing <code>Protein_plot()</code> on the previous test data to ensure the function is working correctly.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Protein_plot</span>(<span class="st">"4AKE"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Note: Accessing on-line PDB file</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in get.pdb(file, path = tempdir(), verbose = FALSE):
+/var/folders/7b/5xrlz_vx2c5d__w683y_p5pm0000gn/T//RtmpxJvJiC/4AKE.pdb exists.
+Skipping download</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Protein_plot</span>(<span class="st">"1AKE"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Note: Accessing on-line PDB file</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in get.pdb(file, path = tempdir(), verbose = FALSE):
+/var/folders/7b/5xrlz_vx2c5d__w683y_p5pm0000gn/T//RtmpxJvJiC/1AKE.pdb exists.
+Skipping download</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   PDB has ALT records, taking A only, rm.alt=TRUE</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Protein_plot</span>(<span class="st">"1E4Y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Note: Accessing on-line PDB file</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in get.pdb(file, path = tempdir(), verbose = FALSE):
+/var/folders/7b/5xrlz_vx2c5d__w683y_p5pm0000gn/T//RtmpxJvJiC/1E4Y.pdb exists.
+Skipping download</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="class06_HW_files/figure-html/unnamed-chunk-16-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+</div>
+<p>Success! Three plots that plot the B factor of each protein.</p>
+<p>The function works to create a B-factor vs residue plot for each protein using the <code>read.pdb()</code>, <code>trim.pdb()</code> and <code>bio3d()</code>. The function uses read.pdb to read in the protein and subsets chain A using <code>trim.pdb</code>. Then <code>bio3d()</code> plot3d function is used to plot the b factor vs the residue with the chain A annotation.</p>
+<p>The function name is: Protein_plot</p>
+<p>There are three inputs, 1 required and 2 with preset options:</p>
+<p>-p = the pdb name to read in surrounded with ““, required: this is used in the <code>read.pdb()</code> step</p>
+<p>-c = the chain identifier surrounded with ““, preset to”A” :required for subsetting and used as the value in <code>trim.pdb()</code> for the chain argument</p>
+<p>-e = the atom type identifier surrounded with ““, preset to”CA”: required for subsetting and used as the value in <code>trim.pdb()</code> for elety argument</p>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

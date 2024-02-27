@@ -1,0 +1,227 @@
+---
+title: "class07: Machine Learning 1"
+author: "Anna Waters (PID: A16271985)"
+format: pdf
+editor: visual
+---
+
+#Clustering Methods
+
+The broad goal here is to find groups (clusters) in your input data
+
+##Kmeans
+
+First, let's make up some data to cluster
+
+```{r}
+#rnorm generates a random data set that creates a normal distribution with 1000 points
+x <- rnorm(1000)
+hist(x)
+```
+
+Make a vector of length of 60 with 30 points cenetred on -3 and 30 points centered at +3
+```{r}
+tmp <- c(rnorm(30, mean = -3), rnorm(30, mean = 3))
+tmp
+```
+
+I will now make a small x and y dataset with 2 groups of points. 
+
+```{r}
+x <- cbind(x=tmp, y =rev(tmp))
+x
+```
+
+```{r}
+plot(x)
+```
+
+```{r}
+k <- kmeans(x,centers = 2)
+k
+```
+Q1. From the results object, `k` how many points are in each cluster?
+
+```{r}
+k$size
+```
+
+Q2. What "component" of your resukt object details the cluster membership?
+
+```{r}
+k$cluster
+```
+
+Q3. Cluster centers?
+
+```{r}
+k$centers
+```
+
+Q. Plot of our clustering results
+
+```{r}
+plot(x, col = k$cluster)
+points(k$centers, col= "blue", pch =15, cex=2)
+```
+
+We can cluster into 4 groups
+ 
+```{r}
+#K means
+k4 <- kmeans(x,centers = 4)
+
+#plot results
+plot(x, col = k4$cluster)
+points(k4$centers, col= "blue", pch =15, cex=2)
+```
+
+A big limitation of kmeans is that it does what you ask even if you ask for silly clusters. 
+
+## Hierarchical Clustering
+
+The main base R function for Hierarchical Clustering is `hclust()`. Unlike `kmeans()` you can not just pass it your data as input. You first need to calculate a distance matrix. 
+
+```{r}
+d <- dist(x)
+hc <- hclust(d)
+hc
+```
+
+Use `plot()` to view results
+```{r}
+plot(hc)
+abline(h=10, col= "red")
+```
+
+To make the "cut" and get our cluster membership ector, we can use the  `cutree()` function.
+
+```{r}
+grps <- cutree(hc, h = 10)
+grps
+```
+
+Make a plot of our data colored by hclust results
+```{r}
+plot(x, col = grps)
+```
+
+## PCA of UK Food
+
+Here we will do Principal Component Analysis (PCA) on some food data from the UK.
+
+```{r}
+url <- "https://tinyurl.com/UK-foods"
+x <- read.csv(url, row.names = 1)
+x
+```
+
+
+```{r}
+#not a good way because it can over ride itself
+#rownames(x) <- x[,x]
+#x <- x[,-1]
+#x
+```
+
+**Q1**. How many rows and columns are in your new data frame named x? What R functions could you use to answer this questions?
+
+```{r}
+dim(x)
+```
+There are 17 rows and 4 columns in the edited version because the first column was read in as the row names. I used `dim()` to see both the rows and columns with only one function.
+
+Looking at the data
+```{r}
+## Preview the first 6 rows
+head(x)
+```
+
+**Q2**. Which approach to solving the ‘row-names problem’ mentioned above do you prefer and why? Is one approach more robust than another under certain circumstances?
+
+The row.names =1 option in the `read.csv()` is a better option because it wont continue to eat at the data set if run multiple times like the other option. 
+
+**Spotting Major Differences in the data set**
+
+```{r}
+barplot(as.matrix(x), beside=T, col=rainbow(nrow(x)))
+```
+
+
+**Q3**: Changing what optional argument in the above barplot() function results in the following plot?
+```{r}
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+```
+ Changing the `beside` argument to False results in the change of the barplot.
+
+**Q5**: Generating all pairwise plots may help somewhat. Can you make sense of the following code and resulting figure? What does it mean if a given point lies on the diagonal for a given plot?
+
+```{r}
+pairs(x, col=rainbow(10), pch=16)
+```
+
+These plots show the coutries plotted against each other. If the points are on a diagonal between two countries, that means the value is the same in both countries. This shows that Northern Ireland has a few points that are off the diagonal and thus it has some differences from all three. 
+
+**Q6**. What is the main differences between N. Ireland and the other countries of the UK in terms of this data-set?
+
+It is too difficult to tell which food is the main difference but the blue and orange points tend to be off the diagonal for Northern Ireland. 
+
+##PCA to the rescue
+
+The main "base" R function for PCA is called `prcomp()`. Here we need to take the transpose of our input as we want the countries in the rows and food as the columns.
+
+```{r}
+# Use the prcomp() PCA function 
+#t() is used to transpose the data which makes the countries in the row names rather than columns.
+pca <- prcomp( t(x) )
+#summary tables tells how well the PCA captures the variance
+summary(pca)
+```
+
+Q. How much variance is captured in 2 PCs?
+
+96.5%
+
+Q7. Complete the code below to generate a plot of PC1 vs PC2. The second line adds text labels over the data points.
+
+To make our main "PC score plot" or "PC1 vs PC2 plot" or "PC plot" or "ordination plot".
+```{r}
+attributes(pca)
+
+```
+
+We are after `pca$x` result component to make our main PCA plot.
+```{r}
+pca$x
+
+```
+
+```{r}
+# Plot PC1 vs PC2
+mycols <- c("orange","red","blue","darkgreen")
+plot(pca$x[,1], pca$x[,2], col = mycols, pch =16,
+     xlab= "PC1 (67.4%)", ylab ="PC2 (29%)")
+
+```
+
+Another important result from PCA is how the original variables (in this case, the foods) contribute to the PCAs.
+
+This is contained in the `pca$rotation` object- folks often cll this the "loadings" or "contributions" to the PCs. 
+
+```{r}
+pca$rotation
+#greater values mean more contribution (abs value)
+```
+
+We can make a plot along PC1.
+
+```{r}
+library(ggplot2)
+
+contributions <- as.data.frame(pca$rotation)
+
+ggplot(contributions) +
+  aes(PC1, rownames(contributions)) +
+  geom_col()
+```
+
