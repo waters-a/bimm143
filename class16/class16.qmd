@@ -1,0 +1,41 @@
+---
+title: "class16:graphing the tsv"
+author: "Anna Waters (PID: A16271985)"
+format: pdf
+editor: visual
+---
+
+Reading in file from virtual computer
+
+```{r}
+data <- read.delim("mm-second.x.zebrafish.tsv", sep = "\t")
+```
+ 
+ Renaming columns
+ 
+```{r}
+colnames(data) <- c("qseqid", "sseqid", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore")
+head(data)
+```
+ 
+```{r}
+hist(data$bitscore, breaks = 30)
+```
+The data is not very normal, it is somewhat skewed towards lower bitscores. There are peaks around 250 and 50 making it somewhat binomial.  
+
+Making the tsv file plots
+```{r}
+library(ggplot2)
+ggplot(data, aes(pident, bitscore)) + geom_point(alpha=0.1) +
+  xlab("Percent Identity") +
+  ylab("Bitscore")
+```
+
+Looks like percent identiy and bitscore are not completely correlated with each other. 
+
+```{r}
+ggplot(data, aes((data$pident * (data$qend - data$qstart)), bitscore)) + geom_point(alpha=0.1) + geom_smooth() +
+  xlab("Percent Identity x Length") +
+  ylab("Bitscore")
+```
+This graph shows that the correlation between the percent identity and sequence length with the bitscores is very high and positive. 
