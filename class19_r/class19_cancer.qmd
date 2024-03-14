@@ -1,0 +1,45 @@
+---
+title: "class19"
+format: html
+editor: visual
+---
+
+Reading the fasta with bio3d
+
+```{r}
+library(bio3d)
+```
+
+```{r}
+cancer_seq <- read.fasta("A16271985_mutant_seq.fa")
+cancer_seq
+```
+
+```{r}
+align <- seqaln(cancer_seq)
+```
+
+```{r}
+cancer_seq$id
+```
+Score residue concervation
+```{r}
+which(conserv(cancer_seq) < 1)
+
+```
+
+```{r}
+paste(cancer_seq$ali[1,which(conserv(cancer_seq) < 1)],which(conserv(cancer_seq) < 1),cancer_seq$ali[2,which(conserv(cancer_seq) < 1)], sep = "" )
+```
+
+looking for pfam
+
+```{r}
+query <- blast.pdb(cancer_seq$ali[1,])
+head(query)
+```
+
+```{r}
+cancer_seq$ali[2,]
+```
+
