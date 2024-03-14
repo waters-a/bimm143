@@ -1,0 +1,225 @@
+---
+title: "class11: Structural Bioinformatics (pt 2)"
+author: "Anna Waters (PID: A16271985)"
+format: pdf
+editor: visual
+---
+
+Alphafold has changed the game for protein structure prediction and allows anyone with sufficient bioinformatics skills to predict the structure of virtually any protein. 
+
+We ran alphafold through GoogleColab at: https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb
+
+Specifially, we used their Alphafold2_mmseqs2 version that uses mmseqs2 rather than HMMMer for sequence search. 
+
+The Main outputs include a set of **PDB files** along with matching **.Json** format files that tell how good the resulting models might be.
+
+Let's start by loading these PDB structures up in Mol*
+
+```{r}
+library(bio3d)
+
+# Change this for YOUR results dir name
+results_dir <- "hivprdimer_23119/" 
+
+# File names for all PDB models
+pdb_files <- list.files(path=results_dir,
+                        pattern="*.pdb",
+                        full.names = TRUE)
+
+# Print our PDB file names
+basename(pdb_files)
+```
+Alignment of
+```{r}
+# Read all data from Models 
+#  and superpose/fit coords
+pdbs <- pdbaln(pdb_files, fit=TRUE, exefile="msa")
+```
+
+```{r}
+pdbs
+```
+Using RMSD to calculate the closeness between the different models but computing the root mean squared deviation between the amino acids. RMSD is a standard measure of structural distance between coordinate sets. We can use the rmsd() function to calculate the RMSD between all pairs models.
+
+```{r}
+#root mean squared deviation
+rd <- rmsd(pdbs, fit=T)
+range(rd)
+```
+Heat map of the RMSD results. 
+```{r}
+library(pheatmap)
+
+colnames(rd) <- paste0("m",1:5)
+rownames(rd) <- paste0("m",1:5)
+pheatmap(rd)
+```
+Models 1&2 are the closest to each other while 3 through 5 are more similar to themselves.
+
+```{r}
+# Read a reference PDB structure
+pdb <- read.pdb("1hsg")
+```
+
+This plots the b factor column and compares the b factors. The b factors is the alpha fold confidence scores.
+```{r}
+plotb3(pdbs$b[1,], typ="l", lwd=2, sse=pdb)
+points(pdbs$b[2,], typ="l", col="red")
+points(pdbs$b[3,], typ="l", col="blue")
+points(pdbs$b[4,], typ="l", col="darkgreen")
+points(pdbs$b[5,], typ="l", col="orange")
+abline(v=100, col="gray")
+```
+Looking at this graph, once again models 1 and 2 are the most close together and have the highest confidence (pLDDT) values in comparison to the other 3 models. 
+
+
+We can improve the superposition/fitting of our models by finding the most consistent “rigid core”.
+```{r}
+core <- core.find(pdbs)
+```
+
+```{r}
+core.inds <- print(core, vol=0.5)
+```
+
+Overlaying all of the pdbs according to their core structures. This can be put into Mol* to see what areas are conserved and where is there heavy differences between the models. 
+```{r}
+xyz <- pdbfit(pdbs, core.inds, outpath="corefit_structures")
+```
+
+This RMSF calculation shows that there is high levels of variance \in the second half of the structure. 
+
+```{r}
+rf <- rmsf(xyz)
+
+plotb3(rf, sse=pdb)
+abline(v=100, col="gray", ylab="RMSF")
+```
+
+If the predicted model has more than one domain, each domain may have high confidence, yet the relative positions of the domains may not.The estimated reliability of relative domain positions in graphics of predicted aligned error (PAE) which are included in the downloadable zip file and analyzed in R above.
+
+
+##Predicted ALignment Error for Domains
+Read in JSON files
+```{r}
+library(jsonlite)
+
+# Listing of all PAE JSON files
+pae_files <- list.files(path=results_dir,
+                        pattern=".*model.*\\.json",
+                        full.names = TRUE)
+```
+
+
+```{r}
+pae1 <- read_json(pae_files[1],simplifyVector = TRUE)
+pae2 <- read_json(pae_files[2],simplifyVector = TRUE)
+pae3 <- read_json(pae_files[3],simplifyVector = TRUE)
+pae4 <- read_json(pae_files[4],simplifyVector = TRUE)
+pae5 <- read_json(pae_files[5],simplifyVector = TRUE)
+
+attributes(pae1)
+```
+
+
+```{r}
+# Per-residue pLDDT scores 
+#  same as B-factor of PDB..
+head(pae1$plddt) 
+```
+
+The maximum PAE values are useful for ranking models. Here we can see that model 5 is much worse than model 1. The lower the PAE score the better. How about the other models, what are thir max PAE scores?
+
+```{r}
+pae1$max_pae
+```
+
+```{r}
+pae5$max_pae
+```
+
+```{r}
+pae3$max_pae
+```
+
+```{r}
+pae2$max_pae
+```
+
+```{r}
+pae4$max_pae
+```
+Model 1 (14.09) is better than the rest of the models because it has the lowest max, followed by model 2 (16.36).
+
+We can plot the N by N (where N is the number of residues) PAE scores with ggplot or with functions from the Bio3D package:
+
+```{r}
+plot.dmat(pae1$pae, 
+          xlab="Residue Position (i)",
+          ylab="Residue Position (j)")
+```
+
+```{r}
+
+plot.dmat(pae5$pae, 
+          xlab="Residue Position (i)",
+          ylab="Residue Position (j)",
+          grid.col = "black",
+          zlim=c(0,30))
+```
+
+Model 1 replotted on the same scale as model 5 for better comparison. 
+
+```{r}
+plot.dmat(pae1$pae, 
+          xlab="Residue Position (i)",
+          ylab="Residue Position (j)",
+          grid.col = "black",
+          zlim=c(0,30))
+```
+
+##Residue Conservation from alignment file 
+
+```{r}
+aln_file <- list.files(path=results_dir,
+                       pattern=".a3m$",
+                        full.names = TRUE)
+aln_file
+```
+
+```{r}
+aln <- read.fasta(aln_file[1], to.upper = TRUE)
+```
+
+How many sequences are in this alignment
+```{r}
+dim(aln$ali)
+```
+There are 5,378 sequences being aligned. 
+
+We can score residue conservation in the alignment with the conserv() function.
+```{r}
+sim <- conserv(aln)
+```
+
+```{r}
+plotb3(sim[1:99], sse=trim.pdb(pdb, chain="A"),
+       ylab="Conservation Score")
+```
+
+Note the conserved Active Site residues D25, T26, G27, A28. These positions will stand out if we generate a consensus sequence with a high cutoff value:
+
+```{r}
+con <- consensus(aln, cutoff = 0.9)
+con$seq
+```
+
+For a final visualization of these functionally important sites we can map this conservation score to the Occupancy column of a PDB file for viewing in molecular viewer programs such as Mol*, PyMol, VMD, chimera etc.
+
+```{r}
+m1.pdb <- read.pdb(pdb_files[1])
+occ <- vec2resno(c(sim[1:99], sim[1:99]), m1.pdb$atom$resno)
+write.pdb(m1.pdb, o=occ, file="m1_conserv.pdb")
+```
+
+Model 1 looks very, very good looking at all of these previous metrics. 
