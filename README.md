@@ -8,8 +8,8 @@ Class work from W24 for [BIMM143 at UC San Diego](https://bioboot.github.io/bimm
   
 - Class 6: [R functions and packages]()
   
-- Class 7:
+- Class 7: [Introduction to machine learning for Bioinformatics]()
   
-- Class 8:
+- Class 8: [Unsupervised Learning Mini-Project]()
   
-- Class 9:
+- Class 9: [Halloween Candy Mini-Project]()
